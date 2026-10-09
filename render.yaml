@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: mrbeast-community
+    runtime: static
+    buildCommand: npm ci --prefix frontend && npm run build --prefix frontend
+    staticPublishPath: ./frontend/dist
+    autoDeployTrigger: commit
+    routes:
+      - type: rewrite
+        source: /explore/*
+        destination: /index.html
+      - type: rewrite
+        source: /explore
+        destination: /index.html
+      - type: rewrite
+        source: /community
+        destination: /index.html
+      - type: rewrite
+        source: /join
+        destination: /index.html
+      - type: rewrite
+        source: /about
+        destination: /index.html

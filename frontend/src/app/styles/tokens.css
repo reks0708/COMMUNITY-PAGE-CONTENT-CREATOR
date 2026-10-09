@@ -1,0 +1,27 @@
+:root {
+    --color-deep-espresso: #1B120E;
+    --color-dark-espresso: #241811;
+    --color-rich-coffee-brown: #352319;
+    --color-antique-gold: #B88A44;
+    --color-champagne-gold: #D8B46A;
+    --color-warm-gold-highlight: #F0D99A;
+    --color-creamy-gold-text: #E9DCC5;
+    --color-muted-brown-text: #B9A58B;
+
+    --font-family-heading: 'Your Heading Font', serif;
+    --font-family-body: 'Your Body Font', sans-serif;
+
+    --font-size-large: 2.5rem;
+    --font-size-medium: 1.5rem;
+    --font-size-small: 1rem;
+
+    --line-height-normal: 1.5;
+    --line-height-heading: 1.2;
+
+    --spacing-small: 0.5rem;
+    --spacing-medium: 1rem;
+    --spacing-large: 2rem;
+
+    --border-radius: 0.25rem;
+    --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
