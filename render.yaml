@@ -1,23 +1,24 @@
 services:
   - type: web
     name: mrbeast-community
-    runtime: static
-    buildCommand: npm ci --prefix frontend && npm run build --prefix frontend
-    staticPublishPath: ./frontend/dist
+    runtime: node
+    plan: free
+    buildCommand: npm ci --prefix frontend && npm ci --prefix backend && npm run build --prefix frontend
+    startCommand: npm start --prefix backend
+    healthCheckPath: /api/health
     autoDeployTrigger: commit
-    routes:
-      - type: rewrite
-        source: /explore/*
-        destination: /index.html
-      - type: rewrite
-        source: /explore
-        destination: /index.html
-      - type: rewrite
-        source: /community
-        destination: /index.html
-      - type: rewrite
-        source: /join
-        destination: /index.html
-      - type: rewrite
-        source: /about
-        destination: /index.html
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mrbeast-community-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: mrbeast-community-db
+    databaseName: mrbeast_community
+    user: mrbeast_community
+    plan: free

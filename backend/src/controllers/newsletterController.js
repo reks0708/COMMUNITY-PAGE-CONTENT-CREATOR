@@ -1,20 +1,23 @@
 const newsletterService = require('../services/newsletterService');
-const { validateEmail } = require('../middleware/validation');
-const { sendSuccessResponse, sendErrorResponse } = require('../utils/responses');
 
 exports.subscribeToNewsletter = async (req, res) => {
-    const { email } = req.body;
+    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const name = typeof req.body.name === 'string' ? req.body.name.trim().slice(0, 100) : '';
+    const contentPreference = typeof req.body.contentPreference === 'string'
+        ? req.body.contentPreference.trim().slice(0, 100)
+        : '';
 
-    // Validate email
-    const validationError = validateEmail(email);
-    if (validationError) {
-        return sendErrorResponse(res, validationError);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ error: 'Invalid email format' });
     }
 
     try {
-        const subscription = await newsletterService.subscribe(email);
-        return sendSuccessResponse(res, { message: 'Subscription successful', subscription });
+        const subscription = await newsletterService.subscribe({ email, name, contentPreference });
+        return res.status(201).json({ message: 'Subscription successful', subscription });
     } catch (error) {
-        return sendErrorResponse(res, { message: 'Subscription failed', error: error.message });
+        if (error.code === '23505') {
+            return res.status(400).json({ error: 'Email already subscribed' });
+        }
+        return res.status(500).json({ error: 'Subscription failed' });
     }
 };

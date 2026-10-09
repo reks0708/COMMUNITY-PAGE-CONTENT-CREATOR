@@ -1,31 +1,27 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const app = express();
-const port = process.env.PORT || 5000;
+require('dotenv').config();
+const app = require('./app');
+const { connectDB, disconnectDB } = require('./services/db');
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const port = Number(process.env.PORT) || 5000;
 
-// Import routes
-const indexRoutes = require('./routes/index');
-const healthRoutes = require('./routes/healthRoutes');
-const newsletterRoutes = require('./routes/newsletterRoutes');
-const commentRoutes = require('./routes/commentRoutes');
-const moderationRoutes = require('./routes/moderationRoutes');
-const adminRoutes = require('./routes/adminRoutes');
+const start = async () => {
+    await connectDB();
+    const server = app.listen(port, '0.0.0.0', () => {
+        console.log(`API server listening on port ${port}`);
+    });
 
-// Use routes
-app.use('/', indexRoutes);
-app.use('/api/health', healthRoutes);
-app.use('/api/newsletter', newsletterRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/moderation', moderationRoutes);
-app.use('/api/admin', adminRoutes);
+    const shutdown = () => {
+        server.close(async () => {
+            await disconnectDB();
+            process.exit(0);
+        });
+    };
 
-// Start server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    process.once('SIGTERM', shutdown);
+    process.once('SIGINT', shutdown);
+};
+
+start().catch((error) => {
+    console.error('Backend startup failed:', error.message);
+    process.exit(1);
 });

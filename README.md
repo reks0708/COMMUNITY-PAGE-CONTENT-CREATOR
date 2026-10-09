@@ -49,13 +49,13 @@ To run the project locally, follow these steps:
 
 ## Publish the Website
 
-The Render Blueprint in `render.yaml` deploys the frontend as a public static site, including rewrites for the React routes.
+The Render Blueprint in `render.yaml` deploys the Node backend and Vite frontend together and provisions a PostgreSQL database. The backend serves the built frontend and `/api` from one public origin. The initial database setup creates the newsletter table automatically.
 
 1. Push this project to a GitHub repository.
 2. In the Render Dashboard, choose **New** → **Blueprint** and connect that repository.
-3. Review the `mrbeast-community` static site and apply the Blueprint. Render will build `frontend/dist` and provide a public `onrender.com` URL that works across devices.
+3. Review the `mrbeast-community` web service and database, then apply the Blueprint. Render will build both applications, initialize the newsletter table, and provide a public `onrender.com` URL.
 
-The frontend defaults API requests to the same site's `/api` path. This Blueprint publishes only the frontend; newsletter subscriptions and server-backed community features need a separately deployed, working backend and a `VITE_API_BASE_URL` pointing to it.
+The Blueprint generates `JWT_SECRET` and supplies `DATABASE_URL` from its managed PostgreSQL database. Newsletter subscriptions and health checks are wired to the database. Comment, authentication, and moderation APIs are not deployment-ready yet and are not mounted in the public API until their implementation and authorization are completed.
 
 ## Testing
 To run tests for the backend, navigate to the `backend` directory and execute:
