@@ -22,6 +22,6 @@ const start = async () => {
 };
 
 start().catch((error) => {
-    console.error('Backend startup failed:', error.message);
+    console.error('Backend startup failed:', error);
     process.exit(1);
 });
